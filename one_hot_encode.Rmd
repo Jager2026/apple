@@ -6,13 +6,6 @@ output:
   prettydoc::html_pretty:
     theme: architect
     highlight: github
-  # html_document:
-  #   theme: darkly
-  #   highlight: zenburn
-  #   toc: true
-  #   toc_float: true
-  #   #number_sections: true
-  #   css: ["custom.css"]
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(error=TRUE,echo=TRUE,message=FALSE,warning=FALSE)
@@ -20,15 +13,11 @@ library(reticulate)
 library(tidyverse)
 library(caret)
 #reticulate::py_config()
-#use_condaenv(condaenv='ds39', conda="/opt/anaconda3/bin/conda")
 ```
-
 ```{python include=FALSE,eval=FALSE}
 import pandas as pd
 print(pd.__file__)
 ```
-
-
 Most of the machine learning algorithms requires numerical features. One hot encoding turns each category in a categorical variable into a new feature, referred to as dummy variable. The values in each dummy variable are 0s and 1s. Each row only has one dummy variable being $1$ and the rest dummy variables are $0$. 
 
 We can do one hot encoding manually or call the functions from **sklearn** or **caret**:
@@ -81,5 +70,3 @@ result = encoder.fit_transform(df[["technology"]]).toarray()
 print(result)
 print(encoder.get_feature_names(['technology']))
 ```
-
-
