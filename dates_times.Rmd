@@ -1,0 +1,61 @@
+---
+title: "dates and times in R"
+output: 
+  html_document:
+    theme: darkly
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    #number_sections: true
+    css: ["custom.css"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE,message = FALSE)
+```
+
+# Extract date and time from POSIXct object
+**POSIXct** objects represent the number of seconds elapsed since `1970-01-01 00:00.00 UTC`.
+
+## Convert a string to POSIXct class
+```{r}
+as.POSIXct("2010-06-25 09:27:01", format="%Y-%m-%d %H:%M:%S")
+d <- as.POSIXct("2010-06-25 09:27:01", format="%Y-%m-%d %H:%M:%S")
+```
+
+```{r}
+as.POSIXct("4/12/13 9:27 AM", format="%m/%d/%y %I:%M %p")
+```
+
+## Extract date and time components
+```{r}
+format(d, format="%Y")
+format(d, format="%m")
+format(d, format="%d")
+as.integer(format(d, format="%Y"))
+```
+
+# The lubricate package
+Dates and times are made easy with lubridate. The lubridate package is part of tidyverse.
+```{r}
+library(lubridate)
+
+d <- as.POSIXct("4/12/13 9:27 AM", format="%m/%d/%y %I:%M %p")
+
+year(d)
+class(year(d))
+month(d)
+day(d)
+hour(d)
+minute(d)
+second(d)
+```
+
+## Find the difference between two dates
+```{r}
+difftime(
+  ymd_hms("2021-04-20 00:00:00"),
+  ymd_hms("2013-04-12 09:27:00"), 
+  units = "days"
+)
+```
