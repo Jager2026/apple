@@ -1,0 +1,85 @@
+---
+title: "One hot encoding"
+author: "J(w)-cis-iun"
+#date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+  # html_document:
+  #   theme: darkly
+  #   highlight: zenburn
+  #   toc: true
+  #   toc_float: true
+  #   #number_sections: true
+  #   css: ["custom.css"]
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,echo=TRUE,message=FALSE,warning=FALSE)
+library(reticulate)
+library(tidyverse)
+library(caret)
+#reticulate::py_config()
+#use_condaenv(condaenv='ds39', conda="/opt/anaconda3/bin/conda")
+```
+
+```{python include=FALSE,eval=FALSE}
+import pandas as pd
+print(pd.__file__)
+```
+
+
+Most of the machine learning algorithms requires numerical features. One hot encoding turns each category in a categorical variable into a new feature, referred to as dummy variable. The values in each dummy variable are 0s and 1s. Each row only has one dummy variable being $1$ and the rest dummy variables are $0$. 
+
+We can do one hot encoding manually or call the functions from **sklearn** or **caret**:
+
+- Call **OneHotEncoder** from **sklearn.preprocessing**
+- Call **dummyVars** from **caret** package
+
+## One-hot in R
+
+- By calling **dummyVars**, fit an object `dummifier` to categorical features in a data frame which need to be encoded;
+- By calling **predict**, run `dummifier` with a formual on the data frame.
+- The return of predict is a matrix, containing all the dummy variables.
+
+1. Generate a categorical feature
+```{r}
+cats <- c("4G", "fiber", "phone", "landline")
+N_samples <- 20
+df <- tibble(technology = cats[sample(1:length(cats), N_samples, replace=TRUE)])
+head(df$technology, 3)
+```
+2. Dummify the feature
+```{r echo=TRUE}
+dummifier <- dummyVars("~ technology", data=df)
+dummy <- as_tibble(predict(dummifier, df))
+knitr::kable(head(dummy, 3))
+```
+
+3. Append the dummy variables to the data frame
+```{r echo=TRUE}
+df <- df %>% add_column(dummy, .after ="technology") 
+str(df)  
+```
+
+## One-hot in Python
+```{python}
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+```
+```{python}
+N_samples = 20
+cats = np.array(["4G", "fiber", "phone", "landline"])
+inds = np.random.default_rng().integers(low=0, high=len(cats), size=N_samples)
+df = pd.DataFrame(cats[inds], columns=['technology'])
+df
+```
+```{python}
+encoder = OneHotEncoder()
+result = encoder.fit_transform(df[["technology"]]).toarray()
+print(result)
+print(encoder.get_feature_names(['technology']))
+```
+
+
